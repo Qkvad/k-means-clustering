@@ -3,8 +3,8 @@ A project in data mining. More info soon...
 
 ## Project Goals
 
-- [ ] extract words into matrix, reduce the matrix by removing function words (low-frequency words, high-frequency word with no important content and stopwords) 
-- [ ] create vector space model - use schemes txn or tfn to normalize document vectors
+- [x] extract words into matrix, reduce the matrix by removing function words (low-frequency words, high-frequency word with no important content and stopwords) 
+- [x] create vector space model - use schemes txn or tfn to normalize document vectors
 - [ ] partitioning of the document vectors into k disjoint clusters, get centroid for each cluster, normalize centroid/mean vector to get concept vector
 - [ ] objective function - cluster quality
 - [ ] spherical k-means algorithm
