@@ -22,7 +22,7 @@ Compile code
 g++ -std=c++11 main.cpp -o m
 ```
 
-Run code
+Execute
 ```
 ./m
 ```
@@ -31,6 +31,6 @@ Run code
 
 output.txt contains human-readable list of all selected words, their occurances in documents and number of documents they apear in.
 
-matlab_data.txt contains a matlab .mtx format word-by-document matrix to be read with mmread.
+matlab_data.mtx contains a matlab .mtx format word-by-document matrix to be read with mmread.
 
 
