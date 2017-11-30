@@ -1,5 +1,5 @@
 # Concept decompositions for Large Sparse Text Data using Clustering
-A project in data mining. More info soon...
+A project in data mining based on "Concept Decompositions for Large Sparse Text Data using Clustering.pdf" which can be found as part of this project. 
 
 ## Project Goals
 
