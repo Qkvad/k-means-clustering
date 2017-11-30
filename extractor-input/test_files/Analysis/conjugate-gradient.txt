@@ -1,0 +1,435 @@
+Conjugate Gradient Method
+Com S 477/577 Nov 6, 2007
+
+1 Introduction
+
+Recall that in steepest descent of nonlinear optimization the steps are along directions that undo some of the progress of the others. The basic idea of the conjugate gradient method is to move in non-interfering directions.
+Suppose we have just performed a line minimization along the direction u. Then the gradient f at the current point is perpendicular to u, because otherwise we would have been able to move further along u. Next, we should move along some direction v. In steepest descent we let v = -f . In the conjugate gradient method we perturb -f by adding to it some direction to become v.
+We want to choose v in such a way that it does not undo our minimization along u. In other words, we want f to be perpendicular to u before and after we move along v. At least locally we want that the change in f be perpendicular to u.
+Now observe that a small change x in x will produce a small change in f given by
+
+ f  Hf · x.
+
+Our idea of moving along non-interfering directions leads to the condition
+
+uT  f = 0,
+
+And the next move should be along the direction v such that
+
+uT Hf v = 0.
+
+(1)
+
+Even though v is not orthogonal to u, it is Hf -orthogonal to u. Of course, we must worry about a slight technicality. The connection between x and (f )
+in terms of the Hessian Hf is a differential relationship. We here use it for finite motions to the extent that Taylor's approximation of order 2 is valid. Suppose we expand f around a point y:
+
+f (x + y)
+
+
+
+f (y)
+
++
+
+f (y)T
+
+x
+
++
+
+1 2
+
+xT
+
+Hf x.
+
+Thus f locally looks like a quadratic. If we focus on quadratics, then the Hessian Hf does not vary as we move along directions u and v. Thus the condition (1) makes sense.
+With this reasoning as background, one develops the conjugate gradient method for quadratic functions formed from symmetric positive definite matrices. For such quadratic functions, the conjugate gradient method converges to the unique global minimum in at most n steps, by moving along successive non-interfering directions.
+For general functions, the conjugate gradient method repeatedly executes "packages" of n steps. Once near a local minimum, the algorithm converges quadratically.
+
+1
+
+2 Conjugate Direction
+
+Given a symmetric matrix Q, two vectors d1 and d2 are said to be Q-orthogonal, or conjugate with respect to Q, if dT1 Qd2 = 0. A finite set of vectors d0, d1, . . . , dk is said to be a Q-orthogonal set if dTi Qdj = 0 for all i = j.
+Proposition 1 If Q is symmetric positive definite and the vectors d0, d1, . . . , dk are Q-orthogonal to each other, then they are linearly independent.
+
+Proof Suppose there exist constants i, i = 0, 1, . . . , k such that
+
+0d0 + · · · + kdk = 0.
+
+Multiplying by Q and taking the scalar product with di yields
+
+idTi Qdi = 0, for i = 0, 1, . . . , k. But dTi Qdi > 0 given the positive definiteness of Q, we have i = 0 for i = 0, . . . , k.
+
+Let us investigate just why the notion of Q-orthogonality is useful in the solution of the following
+
+problem
+
+min
+
+1 2
+
+xT
+
+Qx
+
++
+
+bT
+
+x,
+
+(2)
+
+where Q is symmetric positive definite. The unique solution to this problem is also the unique
+
+solution to the equation
+
+Qx + b = 0.
+
+(3)
+
+Suppose that d0, . . . , dn-1 are n non-zero Q-orthogonal vectors. By the previous proposition, these vectors are independent. Therefore they form a Q-orthogonal basis for Rn.
+Let x be the unique solution to (2) or (3). We can write
+
+x = 0d0 + · · · + n-1dn-1,
+
+for some real numbers 0, . . . , n-1. Plugging the above into (3) yields
+
+Q(0d0 + · · · + n-1dn-1) + b = 0
+
+and dTi Q(0d0 + · · · + n-1dn-1) + dTi b = 0.
+Due to the Q-orthogonality of the di's, we can solve for these coefficients
+
+Thus we obtain the explicit formula
+
+i
+
+=
+
+-
+
+dTi b dTi Qdi
+
+.
+
+x
+
+=
+
+-
+
+n-1 i=0
+
+dTi b dTi Qdi
+
+di.
+
+Notice two important facts:
+
+2
+
+1. By choosing d1, . . . , dn to be Q-orthogonal we can determine the coefficients 1, . . . , n easily, using inner products.
+2. The approach is possible for any positive-definite matrix. In particular, we could simply have chosen the di's to be orthogonal (i.e., I-orthogonal). Then x = in=-01(dTi x/dTi di)di. However, by choosing the di's to be Q-orthogonal we can determine the coefficients i's in terms of the known quantity b, not the unknown quantity x.
+How does this generate an algorithm? One view is purely algebraic, namely, we compute 0, 1, . . . , n-1. Another view is to think of these computations as an n-step search. We start the search at the origin. On the ith iteration we move in the direction di by i. After n iterations, we have found the unique minimum x, as we will see shortly.
+But two important issues remain:
+1. How do we construct the Q-orthogonal vectors d0, . . . , dn-1?
+2. How do we deal with the reality that the matrix Q = Hf is often unknown?
+
+3 Properties of Descent
+
+Let Q be a symmetric and positive definite matrix. We define Bk as the subspace of Rn spanned by a set of Q-orthogonal vectors d0, d1, . . . , dk-1; or for short,
+
+Bk = span{d0, d1, . . . , dk-1}.
+
+Theorem 2 (Expanding Subspace) Let {d0, . . . , dn-1} be a set of nonzero Q-orthogonal vectors in Rn. For any x0  Rn, consider the sequence {xk} generated by the rule
+
+xk+1 = xk + kdk,
+
+where, writing gk = Qxk + b, The following statements hold:
+
+k
+
+=
+
+-
+
+gTk dk dTk Qdk
+
+.
+
+(i) the sequence {xk} converges to the unique solution x of Qx + b = 0 after n steps. In other
+
+words,
+
+xn
+
+=
+
+x
+
+minimizes
+
+the
+
+function
+
+f (x)
+
+=
+
+1 2
+
+xT
+
+Qx
+
++
+
+bT x.
+
+(ii) xk+1 minimizes the same function f (x) on the line x = xk + dk, - <  <  as well as on the linear variety x0 + Bk+1.
+
+Proof To prove (i), we make use of the linear independence of the dj's. Notice that
+
+x - x0 = 0d0 + · · · + n-1dn-1
+
+for some 0, . . . , n-1. We multiply both sides of the equation by Q and take the inner product
+
+with dk, yielding
+
+k
+
+=
+
+dTk
+
+Q(x - dTk Qdk
+
+x0)
+
+.
+
+(4)
+
+3
+
+Now we use induction to show that k defined in (4) equals -gTk dk/dTk Qdk. Suppose this is true for 0, . . . , k-1. Following the iterative steps from x0 up to xk we have
+
+xk - x0 = 0d0 + · · · + k-1dk-1. By the Q-orthogonality of the dj's it follows that
+dTk Q(xk - x0) = 0. Substituting the above into (4) we obtain that
+
+k
+
+=
+
+dTk Q(x - xk + xk - x0) dTk Qdk
+
+=
+
+dTk Q(x - xk) dTk Qdk
+
+=
+
+dTk (Qx - Qxk) dTk Qdk
+
+=
+
+dTk (-b - Qxk) dTk Qdk
+
+=
+
+-
+
+gTk dk dTk Qdk
+
+.
+
+To prove (ii), we show that xk+1 minimizes f over the linear variety x0 + Bk+1, which contains the line x = xk + dk. Since the quadratic function f is strictly convex, a local minimum is also a global one. So the conclusion will hold if it can be shown that the gradient gk+1 is orthogonal to Bk+1, that is, if the gradient is orthogonal to d0, d1, . . . , dk.1 We prove this by induction. The hypothesis is true for k = 0 since B0 is empty. Assume that gk  Bk. We have
+
+gk+1 = Qxk+1 + b = Q(xk + kdk) + b = Qxk + b + kQdk = gk + kQdk,
+
+and hence by definition of k
+
+dTk gk+1 = dTk gk + kdTk Qdk
+
+=
+
+dTk gk
+
+-
+
+gTk dk dTk Qdk
+
+dTk Qdk
+
+= dTk gk - gTk dk
+
+= 0.
+
+Also it holds that
+
+dTi gk+1 = dTi gk + kdTi Qdk,
+
+for i < k.
+
+The first term on the right hand side of the above equation vanishes due to the induction hypothesis,
+
+while the second term vanishes by the Q-orthogonality of the di's. Thus gk+1  Bk+1.
+
+1Otherwise, we can always move along some direction in Bk+1 to decrease f .
+
+4
+
+Corollary 3 The gradients gk, k = 0, 1, . . . , n, satisfy gk  Bk.
+This theorem tells us that the conjugate gradient algorithm really is a generalization of steepest descent. Each step of adding kdk to the previous estimate is the same as doing a line minimization along the direction of dk. Furthermore, the offset kdk does not undo previous progress, that is, the minimization is in fact a minimization over x0 + Bk+1.
+x0+ Bk+1
+
+xk+1 dk
+
+xk
+
+gk+1
+
+dk- 1 xk- 1
+
+So the Bk's form a sequence of subspace with Bk  Bk+1. Because xk minimizes f over x0 + Bk, it is clear that xn minimizes f over the entire space Rn = Bn.
+4 Conjugate Gradient Algorithm
+The conjugate gradient algorithm selects the successive direction vectors as a conjugate version of the successive gradients obtained as the method progresses. Thus, the directions are not specified beforehand, but rather are determined sequentially at each step of the iteration. At step k one evaluates the current negative gradient vector and adds to it a linear combination of the previous direction vectors to obtain a new conjugate direction vector along which to move.
+There are three primary advantages to this method of direction selection. First, unless the solution is attained in less than n steps, the gradient is always nonzero and linearly independent of all previous direction vectors. Indeed, as the corollary states, the gradient gk is orthogonal to the subspace Bk generated by d0, d1, . . . , dk-1. If the solution is reached before n steps are taken, the gradient vanishes and the process terminates.
+Second, a more important advantage of the conjugate gradient method is the especially simple formula that is used to determine the new direction vector. This simplicity makes the method only slightly more complicated than steepest descent.
+Third, because the directions are based on the gradients, the process makes good uniform progress toward the solution at every step. This is in contrast to the situation for arbitrary sequences of conjugate directions in which progress may be slight until the final few steps. Although for the pure quadratic problem uniform progress is of no great importance, it is important for generalizations to nonquadratic problems.
+
+5
+
+Conjugate Gradient Algorithm
+
+1. g0  Qx0 + b 2. d0  -g0 3. for k = 0, . . . , n - 1 do
+
+a)
+
+k
+
+
+
+-
+
+gTk dk dTk Qdk
+
+b) xk+1  xk + kdk
+
+c) gk+1  Qxk+1 + b
+
+d)
+
+k
+
+
+
+gTk+1Qdk dTk Qdk
+
+e) dk+1  -gk+1 + kdk
+
+4. return xn
+
+Step 3b) when k = 0 is a steepest descent. Each subsequent step moves in a direction that modifies the opposite of the current gradient by a factor of the previous direction. Step 3a)­e) gives us the Q-orthogonality of the descent vectors d0, . . . , dn-1.
+
+Theorem 4 (Conjugate Gradient Theorem) In the conjugate gradient algorithm, we have that
+
+a) span{g0, . . . , gk} = span{g0, Qg0, . . . , Qkg0}
+
+b) span{d0, . . . , dk} = span{g0, Qg0, . . . , Qkg0}
+
+c) dTk Qdi = 0 for all i < k
+
+d)
+
+k =
+
+gTk gk dTk Qdk
+
+e)
+
+k
+
+=
+
+gTk+1gk+1 gTk gk
+
+For proof of the theorem we refer to [2, pp. 245­246]. Part c) of the above theorem states that the di's are Q-orthogonal to each other. Part e) is very important, because it provides us a way to compute k without knowing Q.
+
+5 Extension to Nonquadratic Problems
+How do we compute k without knowing Q? The Expanding Subspace Theorem already gave us the answer -- a line search. This agrees with the formula in the quadratic case.
+We can generalize the conjugate gradient algorithm to devise a numerical routine to minimize an arbitrary function f . Here the Hessian of f plays the role of Q. The algorithm executes groups of n search steps. Each step builds a coordinate idi in a search for the minimum x. After n steps, the algorithm resets, using its current x location as a new "origin" from which to start another n-step search.
+
+6
+
+Fletcher-Reeves Algorithm
+
+1. start at some x0 2. d0  -f (x0) 3. for k = 0, 1, . . . , n - 1 do
+
+a) obtain k that minimizes g() = f (xk + dk)
+
+b) xk+1  xk + kdk
+
+c) k 
+
+f (xk+1) 2 f (xk) 2
+
+d) dk+1  -f (xk+1) + kdk
+
+4. x0  xn
+
+5. go back to step 2 until satisfied with the results.
+
+To determine k the algorithm employs part e) of Theorem 4. Step 2 ensures that there is at least one descent direction in every n iterations. Steps 3a) and 3b) ensure that no step increases f .
+Global convergence of the line search methods is established by noting that a pure steepest descent step is taken every n steps and serves as a spacer step. Since the other steps do not increase the objective, and in fact hopefully they decrease it, global convergence is assured. The restarting aspect of the algorithm is important for global convergence analysis, since in general one cannot guarantee that the directions dk generated by the method are descent directions.
+The local convergence properties of nonquadratic extensions of the conjugate gradient method can be inferred from the quadratic analysis. Assuming that at the solution, x, the Hessian f is positive definite, we expect the asymptotic convergence rate per step to be at least as good as steepest descent, since this is true in the quadratic case. In addition to this bound on the single step rate we expect that the method is of order two with respect to each complete cycle of n step. In other words, since one complete cycle solves a quadratic problem exactly just as Newton's method does in one step, we expect that for general nonquadratic problems there will hold
+xk+n - x  c xk - x 2
+for some c and k = 0, n, 2n, . . .. This can indeed be proved, and of course underlies the original motivation for the method.
+
+6 Conclusion
+
+Recall that in finding a minimum of f of n variables, we may wish to consider the set of zeros of
+
+f  = f . In principle, we could apply Newton's method to f , resulting in the following iteration
+
+formula:
+
+-1
+
+x(m+1) = x(m) - Hf x(m)
+
+f x(m) .
+
+Suppose f is a quadratic function with the form
+
+f (x)
+
+=
+
+c
+
++
+
+bT
+
+x
+
++
+
+1 xT 2
+
+Ax,
+
+7
+
+where A is symmetric positive definite. Then f = b + Ax and Hf = A, and the global minimum of f satisfies Ax = -b. In this case, Newton's method converges in a single step. But for general f , the Hessian Hf often is unknown. To remedy this, there exist methods called Quasi-Newton methods that build (Hf )-1 iteratively as they move.
+Conjugate Gradient is an intermediate between steepest descent and Newton's method. It tries to achieve the quadratic convergence of Newton's method without incurring the cost of computing Hf . At the same time, Conjugate Gradient will execute at least one gradient descent step per n steps. It has proved to be extremely effective in dealing with general objective functions and is considered among the best general purpose methods presently available.
+References
+[1] M. Erdmann. Lecture notes for 16-811 Mathematical Fundamentals for Robotics. The Robotics Institute, Carnegie Mellon University, 1998.
+[2] D. G. Luenberger. Linear and Nonlinear Programming. Addison-Wesley, 2nd edition, 1984.
+8
+
+
