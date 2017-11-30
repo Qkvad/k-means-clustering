@@ -68,6 +68,22 @@ int main() {
     getline(root_file, filename);
 
     /*==================================================================================================================
+                                               EXAMINE USER PREFERENCES
+    ==================================================================================================================*/
+    char stopwords, stemming;
+    int shortlength, xtimes;
+    std::cout << std::endl << "ignore stop words? [y/n] ";
+    std::cin >> stopwords;
+    std::cout << "use Porter stemming? [y/n] ";
+    std::cin >> stemming;
+    std::cout << "ignore words of length less than: ";
+    std::cin >> shortlength;
+    std::cout << "ignore words that occur less than [ ] times in every file: ";
+    std::cin >> xtimes;
+    std::cout << std::endl;
+
+
+    /*==================================================================================================================
                                                    MAIN ALGORITHM
     ==================================================================================================================*/
     while(getline(root_file, filename))
@@ -92,23 +108,27 @@ int main() {
             word_count++;
 
             // ignore stop words
-            if(stop_words.find(word) != stop_words.end()) {
-                word = "";
-                continue;
-            }
+            if(stopwords == 'y')
+                if(stop_words.find(word) != stop_words.end()) {
+                    word = "";
+                    continue;
+                }
+
             // ignore short words
-            if(word.length() < 3) {
+            if(word.length() < shortlength) {
                 word = "";
                 continue;
             }
 
             /*======================================= stemming current word ==========================================*/
-            l=word.length();
-            cstr = (char*)malloc(l*sizeof(char));
-            strcpy(cstr, word.c_str());
-            l = stem(cstr, 0, l-1);
-            cstr[l+1] = '\0';
-            word = cstr;
+            if(stemming == 'y') {
+                l = word.length();
+                cstr = (char *) malloc(l * sizeof(char));
+                strcpy(cstr, word.c_str());
+                l = stem(cstr, 0, l - 1);
+                cstr[l + 1] = '\0';
+                word = cstr;
+            }
 
             /*======================================= filling the hash table =========================================*/
             // try finding first letter container
@@ -152,15 +172,14 @@ int main() {
     /*==================================================================================================================
                                                   CREATING OUTPUT
     ==================================================================================================================*/
-
     for(letter_iterator = wordsMap.begin(); letter_iterator != wordsMap.end(); letter_iterator++)
     {
         for(word_iterator = letter_iterator->second.begin(); word_iterator != letter_iterator->second.end(); word_iterator++) {
-            // test if word has 1 occurance in every file
+            // test if word has <xtimes occurances in every file
             check = 0;
             count = 0;
             for(int j=0; j<number_of_files; j++) {
-                if (word_iterator->second[j] < 5)
+                if (word_iterator->second[j] < xtimes)
                     check++;
                 if(word_iterator->second[j] > 0)
                     count++;
@@ -169,10 +188,9 @@ int main() {
                 continue;
 
             // print to output file
-            output_file << word_iterator->first << "  ";
+            output_file << word_iterator->first << "  (" << count << " occurances)  ";
             for(int j=0; j<number_of_files; j++)
                 output_file << word_iterator->second[j] << "  ";
-            output_file << " -> " << count;
             output_file << std::endl;
 
             unique_words++;
@@ -180,7 +198,7 @@ int main() {
     }
 
     output_file.close();
-    std::cout << std::endl << std::endl << "chosen words with length >=3 and occurance >=5 in at least one file: " << unique_words << std::endl;
+    std::cout << std::endl << std::endl << "chosen words with length >=3 and occurance >=5 in at least one file: " << unique_words << std::endl << std::endl;
 
     X=(double**)malloc(unique_words*sizeof(double*));
     for(int i=0;i<unique_words;i++) X[i]=(double*)malloc(number_of_files*sizeof(double));
@@ -196,7 +214,7 @@ int main() {
             check = 0;
             count = 0;
             for(int j=0; j<number_of_files; j++) {
-                if (word_iterator->second[j] < 5)
+                if (word_iterator->second[j] < xtimes)
                     check++;
                 if(word_iterator->second[j] > 0)
                     count++;
