@@ -36,6 +36,12 @@ int main() {
         std::cout << "unable to open matlab file." << std::endl << "Done." << std::endl;
         return 1;
     }
+    std::ofstream wd_matrix("word-by-document_matrix.txt");
+    if(!wd_matrix.is_open())
+    {
+        std::cout << "unable to open word-by-document matrix file." << std::endl << "Done." << std::endl;
+        return 1;
+    }
     std::ifstream stop_file("stop_words.txt");
     if(!stop_file.is_open())
     {
@@ -126,6 +132,9 @@ int main() {
         std::cout << std::endl << filename << " word count: " << word_count;
     }
 
+    /*==================================================================================================================
+                                                   CREATING OUTPUTS
+    ==================================================================================================================*/
     for(letter_iterator = wordsMap.begin(); letter_iterator != wordsMap.end(); letter_iterator++)
     {
         for(word_iterator = letter_iterator->second.begin(); word_iterator != letter_iterator->second.end(); word_iterator++) {
@@ -143,10 +152,14 @@ int main() {
 
             // print to output file
             output_file << word_iterator->first << "  ";
-            for(int j=0; j<number_of_files; j++)
+            for(int j=0; j<number_of_files; j++) {
                 output_file << word_iterator->second[j] << "  ";
+                // print to wd_matrix file
+                wd_matrix << word_iterator->second[j] << " ";
+            }
             output_file << " -> " << count;
             output_file << std::endl;
+            wd_matrix << std::endl;
 
             unique_words++;
         }
