@@ -12,25 +12,24 @@ A project in data mining based on "Concept Decompositions for Large Sparse Text 
 
 ### How to use word-extractor
 
-Navigate to word-extractor directory
-```
-cd word-extractor
-```
-
 Compile code
 ```
-g++ -std=c++11 main.cpp -o m
+g++ -std=c++11 word-extractor.cpp -o extract
 ```
 
 Execute
 ```
-./m
+./extract
 ```
 
 ### Outputs
 
+...can be found in extractor-output folder
+
 output.txt contains human-readable list of all selected words, their occurances in documents and number of documents they apear in.
 
-matlab_data.mtx contains a matlab .mtx format word-by-document matrix to be read with mmread.
+matlab_data.mtx contains a matlab .mtx format word-by-document matrix (+ additional column with count of row's elements greater than 0) to be read with mmread.
+
+word-by-document_matrix.txt represents what its name implies, without any additional information.
 
 

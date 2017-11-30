@@ -24,25 +24,25 @@ int main() {
     /*==================================================================================================================
                                               OPEN ALL FILES NEEDED
     ==================================================================================================================*/
-    std::ofstream output_file("output.txt");
+    std::ofstream output_file("extractor-output/output.txt");
     if(!output_file.is_open())
     {
         std::cout << "unable to open output file." << std::endl << "Done." << std::endl;
         return 1;
     }
-    std::ofstream matlab_file("matlab_data.mtx");
+    std::ofstream matlab_file("extractor-output/matlab_data.mtx");
     if(!matlab_file.is_open())
     {
         std::cout << "unable to open matlab file." << std::endl << "Done." << std::endl;
         return 1;
     }
-    std::ofstream wd_matrix("word-by-document_matrix.txt");
+    std::ofstream wd_matrix("extractor-output/word-by-document_matrix.txt");
     if(!wd_matrix.is_open())
     {
         std::cout << "unable to open word-by-document matrix file." << std::endl << "Done." << std::endl;
         return 1;
     }
-    std::ifstream stop_file("stop_words.txt");
+    std::ifstream stop_file("extractor-input/stop_words.txt");
     if(!stop_file.is_open())
     {
         std::cout << "unable to open stop words file." << std::endl << "Done." << std::endl;
@@ -52,7 +52,7 @@ int main() {
     while(stop_file >> word) { stop_words.insert(word); }
     word = "";
 
-    std::ifstream root_file("list_of_test_files.txt");
+    std::ifstream root_file("extractor-input/list_of_test_files.txt");
     if(!root_file.is_open())
     {
         std::cout << "unable to open root file." << std::endl << "Done." << std::endl;
@@ -60,16 +60,18 @@ int main() {
     }
     // store number of files
     root_file >> number_of_files;
+    // read empty line to start from the 2. line in the main algorithm
+    getline(root_file, filename);
 
     /*==================================================================================================================
                                                    MAIN ALGORITHM
     ==================================================================================================================*/
-    while(root_file >> filename)
+    while(getline(root_file, filename))
     {
-        std::ifstream file("test_files/" + filename);
+        std::ifstream file("extractor-input/test_files/" + filename);
         if(!file.is_open())
         {
-            std::cout << "unable to open a test file." << std::endl << "Done." << std::endl;
+            std::cout << "unable to open " << filename << std::endl << "Done." << std::endl;
             return 1;
         }
 
@@ -129,6 +131,7 @@ int main() {
 
         file.close();
         current_file++;
+
         std::cout << std::endl << filename << " word count: " << word_count;
     }
 

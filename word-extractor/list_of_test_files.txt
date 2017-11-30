@@ -1,6 +1,0 @@
-5
-Data_Mining.txt
-k-means.txt
-Pattern_Classification.txt
-LOTR_FOTR.txt
-Information_Retrieval.txt
