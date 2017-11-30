@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <set>
 #include "Porter_stemmer.h"
+#include "txn.h"
 
 
 int main() {
@@ -21,6 +22,7 @@ int main() {
     std::string filename, word = "";
     int current_file=0, number_of_files, check, count, word_count=0, unique_words=0, l;
     char c, *cstr;
+    double** X;
 
     /*==================================================================================================================
                                               OPEN ALL FILES NEEDED
@@ -148,8 +150,9 @@ int main() {
     }
 
     /*==================================================================================================================
-                                               CREATING OUTPUT & MATRIX
+                                                  CREATING OUTPUT
     ==================================================================================================================*/
+
     for(letter_iterator = wordsMap.begin(); letter_iterator != wordsMap.end(); letter_iterator++)
     {
         for(word_iterator = letter_iterator->second.begin(); word_iterator != letter_iterator->second.end(); word_iterator++) {
@@ -167,29 +170,24 @@ int main() {
 
             // print to output file
             output_file << word_iterator->first << "  ";
-            for(int j=0; j<number_of_files; j++) {
+            for(int j=0; j<number_of_files; j++)
                 output_file << word_iterator->second[j] << "  ";
-                // print to wd_matrix file
-                wd_matrix << word_iterator->second[j] << " ";
-            }
             output_file << " -> " << count;
             output_file << std::endl;
-            wd_matrix << std::endl;
 
             unique_words++;
         }
     }
 
     output_file.close();
-
     std::cout << std::endl << std::endl << "chosen words with length >=3 and occurance >=5 in at least one file: " << unique_words << std::endl;
 
-    /*==================================================================================================================
-                                                CREATE MATLAB MATRIX
-    ==================================================================================================================*/
-    matlab_file << "%%MatrixMarket matrix coordinate real general" << std::endl;
-    matlab_file << unique_words << " " << number_of_files+1 << " " << unique_words*(number_of_files+1) << std::endl;
+    X=(double**)malloc(unique_words*sizeof(double*));
+    for(int i=0;i<unique_words;i++) X[i]=(double*)malloc(number_of_files*sizeof(double));
 
+    /*==================================================================================================================
+                                                CREATE MATRIX
+    ==================================================================================================================*/
     int row=1;
     for(letter_iterator = wordsMap.begin(); letter_iterator != wordsMap.end(); letter_iterator++)
     {
@@ -208,11 +206,33 @@ int main() {
 
             // print to matlab file
             for(int j=0; j<number_of_files; j++)
-                matlab_file << row << " " << (j+1) << " " << word_iterator->second[j] << std::endl;
-            matlab_file << row << " " << (number_of_files+1) << " " << count << std::endl;
+		X[row-1][j] = word_iterator->second[j];
             row++;
         }
     }
+
+    // tfn txn
+    txn(X,unique_words,number_of_files);
+    
+
+    /*==================================================================================================================
+                                           CREATE MATLAB WORD-by-DOCUMENT MATRIX
+    ==================================================================================================================*/
+    matlab_file << "%%MatrixMarket matrix coordinate real general" << std::endl;
+    matlab_file << unique_words << " " << number_of_files << " " << unique_words*number_of_files << std::endl;
+
+    for(int i=0; i<unique_words; i++) 
+	for(int j=0; j<number_of_files; j++)
+                matlab_file << i+1 << " " << j+1 << " " << X[i][j] << std::endl;
+
+    /*==================================================================================================================
+                                             CREATE WORD-by-DOCUMENT MATRIX
+    ==================================================================================================================*/
+    for(int i=0; i<unique_words; i++) {
+	for(int j=0; j<number_of_files; j++)
+                wd_matrix << X[i][j] << "  ";
+	wd_matrix << std::endl;
+    } 
 
     return 0;
 }
