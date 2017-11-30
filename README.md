@@ -23,6 +23,27 @@ Execute
 ./extract
 ```
 
+Execution output example
+```
+ignore stop words? [y/n] y
+use Porter stemming? [y/n] y
+ignore words of length less than: 3
+ignore words that occur less than [ ] times in every file: 5
+
+
+Data_Mining/Data_Mining.txt word count: 133405
+Data_Mining/k-means.txt word count: 144552
+Data_Mining/Pattern_Classification.txt word count: 397662
+Data_Mining/Information_Retrieval.txt word count: 569597
+Lord_of_the_Rings/The_Fellowship_Of_The_Ring.txt word count: 602560
+Lord_of_the_Rings/The_Two_Towers.txt word count: 761907
+Lord_of_the_Rings/The_Return_Of_The_King.txt word count: 899636
+
+chosen words with length >=3 and occurance >=5 in at least one file: 4932
+
+```
+
+
 ### Extractor's Outputs
 
 ...can be found in extractor-output folder
