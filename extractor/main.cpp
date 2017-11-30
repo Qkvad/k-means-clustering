@@ -2,7 +2,9 @@
 #include <fstream>
 #include <unordered_map>
 #include <set>
+#include "Porter_stemmer.h"
 
+// TODO: custom == operation on strings (Porter stemmer)
 
 int main() {
 
@@ -96,6 +98,14 @@ int main() {
                 word = "";
                 continue;
             }
+
+            int l=word.length();
+            char *cstr = new char[l + 1];
+            strcpy(cstr, word.c_str());
+            l = stem(cstr, 0, l-1);
+            cstr[l+1] = '\0';
+            word = cstr;
+            delete [] cstr;
 
             // try finding first letter container
             letter_iterator = wordsMap.find(word[0]);

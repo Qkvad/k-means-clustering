@@ -10,11 +10,12 @@ A project in data mining based on "Concept Decompositions for Large Sparse Text 
 - [ ] spherical k-means algorithm
 
 
-### How to use word-extractor
+## Usage
+### Word Extractor
 
-Compile code
+Compile
 ```
-g++ -std=c++11 word-extractor.cpp -o extract
+g++ -std=c++11 extractor/main.cpp extractor/Porter_stemmer.c -o extract
 ```
 
 Execute
@@ -22,7 +23,7 @@ Execute
 ./extract
 ```
 
-### Outputs
+### Extractor's Outputs
 
 ...can be found in extractor-output folder
 
