@@ -40,11 +40,9 @@ Lord_of_the_Rings/The_Two_Towers.txt word count: 761907
 Lord_of_the_Rings/The_Return_Of_The_King.txt word count: 899636
 
 chosen words with length >=3 and occurance >=5 in at least one file: 4932
-
 ```
 
-
-### Extractor's Outputs
+#### Extractor's Outputs
 
 ...can be found in extractor-output folder
 
@@ -53,5 +51,17 @@ output.txt contains human-readable list of all selected words, their occurances 
 matlab_data.mtx contains a matlab .mtx format word-by-document matrix (+ additional column with count of row's elements greater than 0) to be read with mmread.
 
 word-by-document_matrix.txt represents what its name implies, without any additional information.
+
+### Matlab
+```
+>> [A,n1,n2]=mainMatLab(3,100)
+A =
+
+   1   1   1   1   2   2   2   3   3
+
+n1 =  2.5055
+n2 =  2.8307
+>>
+```
 
 
