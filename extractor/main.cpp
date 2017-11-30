@@ -4,7 +4,6 @@
 #include <set>
 #include "Porter_stemmer.h"
 
-// TODO: custom == operation on strings (Porter stemmer)
 
 int main() {
 
@@ -20,8 +19,8 @@ int main() {
                                                     VARIABLES
     ==================================================================================================================*/
     std::string filename, word = "";
-    int current_file=0, number_of_files, check, count, word_count=0, unique_words=0;
-    char c;
+    int current_file=0, number_of_files, check, count, word_count=0, unique_words=0, l;
+    char c, *cstr;
 
     /*==================================================================================================================
                                               OPEN ALL FILES NEEDED
@@ -60,6 +59,7 @@ int main() {
         std::cout << "unable to open root file." << std::endl << "Done." << std::endl;
         return 1;
     }
+
     // store number of files
     root_file >> number_of_files;
     // read empty line to start from the 2. line in the main algorithm
@@ -77,6 +77,7 @@ int main() {
             return 1;
         }
 
+        /*======================================== reading file char by char =========================================*/
         while (file.get(c)) {
             // append char to word until non alphabetic
             if(isalpha(c)) {
@@ -99,14 +100,15 @@ int main() {
                 continue;
             }
 
-            int l=word.length();
-            char *cstr = new char[l + 1];
+            /*======================================= stemming current word ==========================================*/
+            l=word.length();
+            cstr = (char*)malloc(l*sizeof(char));
             strcpy(cstr, word.c_str());
             l = stem(cstr, 0, l-1);
             cstr[l+1] = '\0';
             word = cstr;
-            delete [] cstr;
 
+            /*======================================= filling the hash table =========================================*/
             // try finding first letter container
             letter_iterator = wordsMap.find(word[0]);
 
@@ -146,7 +148,7 @@ int main() {
     }
 
     /*==================================================================================================================
-                                                   CREATING OUTPUTS
+                                               CREATING OUTPUT & MATRIX
     ==================================================================================================================*/
     for(letter_iterator = wordsMap.begin(); letter_iterator != wordsMap.end(); letter_iterator++)
     {
