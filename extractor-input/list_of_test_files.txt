@@ -1,4 +1,4 @@
-9
+11
 Data_Mining/Data_Mining.txt
 Data_Mining/k-means.txt
 Data_Mining/Pattern_Classification.txt
@@ -8,3 +8,5 @@ Lord_of_the_Rings/The_Two_Towers.txt
 Lord_of_the_Rings/The_Return_Of_The_King.txt
 Analysis/conjugate-gradient.txt
 Analysis/pde.txt
+Computer_Science/Computer_Organization_and_Design.txt
+Computer_Science/Software_Engineering.txt
