@@ -1,8 +1,11 @@
-11
+14
 Data_Mining/Data_Mining.txt
 Data_Mining/k-means.txt
 Data_Mining/Pattern_Classification.txt
 Data_Mining/Information_Retrieval.txt
+Data_Mining/concepts_and_techniques.txt
+Data_Mining/ML_tools.txt
+Lord_of_the_Rings/The_Hobbit.txt
 Lord_of_the_Rings/The_Fellowship_Of_The_Ring.txt
 Lord_of_the_Rings/The_Two_Towers.txt
 Lord_of_the_Rings/The_Return_Of_The_King.txt
