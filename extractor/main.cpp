@@ -20,9 +20,10 @@ int main() {
                                                     VARIABLES
     ==================================================================================================================*/
     std::string filename, word = "";
-    int current_file=0, number_of_files, check, count, word_count=0, unique_words=0, l;
-    char c, *cstr;
+    int current_file=0, number_of_files, check, count, word_count=0, unique_words=0, l, all_words=0;
+    char c;
     double** X;
+
 
     /*==================================================================================================================
                                               OPEN ALL FILES NEEDED
@@ -66,6 +67,7 @@ int main() {
     root_file >> number_of_files;
     // read empty line to start from the 2. line in the main algorithm
     getline(root_file, filename);
+
 
     /*==================================================================================================================
                                                EXAMINE USER PREFERENCES
@@ -122,12 +124,14 @@ int main() {
 
             /*======================================= stemming current word ==========================================*/
             if(stemming == 'y') {
-                l = word.length();
-                cstr = (char *) malloc(l * sizeof(char));
-                strcpy(cstr, word.c_str());
-                l = stem(cstr, 0, l - 1);
-                cstr[l + 1] = '\0';
+                l = word.size();
+                char* cstr = new char[l+1];
+                std::copy(word.begin(), word.end(), cstr);
+                cstr[l] = '\0';
+                l = stem(cstr, 0, l-1);
+                cstr[l+1] = '\0';
                 word = cstr;
+                delete[] cstr;
             }
 
             /*======================================= filling the hash table =========================================*/
@@ -167,7 +171,12 @@ int main() {
         current_file++;
 
         std::cout << std::endl << filename << " word count: " << word_count;
+        all_words += word_count;
     }
+
+    root_file.close();
+    std::cout << std::endl << std::endl << "TOTAL NUMBER OF WORDS: " << all_words;
+
 
     /*==================================================================================================================
                                                   CREATING OUTPUT
@@ -198,11 +207,11 @@ int main() {
     }
 
     output_file.close();
-    std::cout << std::endl << std::endl << "chosen words with length >=3 and occurance >=5 in at least one file: " << unique_words << std::endl << std::endl;
+    std::cout << std::endl << std::endl << "number of chosen words: " << unique_words << std::endl << std::endl;
+
 
     X=(double**)malloc(unique_words*sizeof(double*));
     for(int i=0;i<unique_words;i++) X[i]=(double*)malloc(number_of_files*sizeof(double));
-
     /*==================================================================================================================
                                                 CREATE MATRIX
     ==================================================================================================================*/
@@ -222,16 +231,19 @@ int main() {
             if(check == number_of_files)
                 continue;
 
-            // print to matlab file
+            // set matrix element value
             for(int j=0; j<number_of_files; j++)
-		X[row-1][j] = word_iterator->second[j];
+		        X[row-1][j] = word_iterator->second[j];
             row++;
         }
     }
 
-    // tfn txn
+
+    /*==================================================================================================================
+                                                   TXN NORMALIZATION
+    ==================================================================================================================*/
     txn(X,unique_words,number_of_files);
-    
+
 
     /*==================================================================================================================
                                            CREATE MATLAB WORD-by-DOCUMENT MATRIX
@@ -240,17 +252,23 @@ int main() {
     matlab_file << unique_words << " " << number_of_files << " " << unique_words*number_of_files << std::endl;
 
     for(int i=0; i<unique_words; i++) 
-	for(int j=0; j<number_of_files; j++)
+	    for(int j=0; j<number_of_files; j++)
                 matlab_file << i+1 << " " << j+1 << " " << X[i][j] << std::endl;
+    matlab_file.close();
+
 
     /*==================================================================================================================
                                              CREATE WORD-by-DOCUMENT MATRIX
     ==================================================================================================================*/
     for(int i=0; i<unique_words; i++) {
-	for(int j=0; j<number_of_files; j++)
+	    for(int j=0; j<number_of_files; j++)
                 wd_matrix << X[i][j] << "  ";
-	wd_matrix << std::endl;
-    } 
+	    wd_matrix << std::endl;
+    }
+    wd_matrix.close();
 
+
+    for(int i=0; i<number_of_files; i++) free(X[i]);
+    free(X);
     return 0;
 }
