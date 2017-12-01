@@ -6,11 +6,11 @@ function [x]=spherical_k_means(A,M,k,iter_num)
   for z=1:iter_num
   
     % searching of the closest concept vectors and creating new partition
-    y=9999*ones(m);
+    y=zeros(m,1);
     for i=1:m
         for j=1:k
-            if(norm(A(:,i)-M(:,j),2)<y(i))
-              y(i)=norm(A(:,i)-M(:,j),2);
+            if(transpose(A(:,i))*M(:,j)>y(i))
+              y(i)=transpose(A(:,i))*M(:,j);
               x(i)=j;
             end
         end
