@@ -5,7 +5,7 @@ function [x]=spherical_k_means(A,M,k,iter_num)
   d = -1;
   for z=1:iter_num
   
-    % searching of the closest concept vectors and creating new partitions
+    % searching of the closest concept vectors and creating new partition
     y=9999*ones(m);
     for i=1:m
         for j=1:k
