@@ -5,9 +5,9 @@ A project in data mining based on "Concept Decompositions for Large Sparse Text 
 
 - [x] extract words into matrix, reduce the matrix by removing function words (low-frequency words, high-frequency word with no important content and stopwords) 
 - [x] create vector space model - use schemes txn or tfn to normalize document vectors
-- [ ] partitioning of the document vectors into k disjoint clusters, get centroid for each cluster, normalize centroid/mean vector to get concept vector
-- [ ] objective function - cluster quality
-- [ ] spherical k-means algorithm
+- [x] partitioning of the document vectors into k disjoint clusters, get centroid for each cluster, normalize centroid/mean vector to get concept vector
+- [x] objective function - cluster quality
+- [x] spherical k-means algorithm
 
 
 ## Usage

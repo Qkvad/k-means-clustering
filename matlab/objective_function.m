@@ -1,4 +1,4 @@
-function [dobr] = dobrota (A, M, x)
+function [dobr] = objective_function (A, M, x)
   
   if x(1)==0
     dobr = 0;

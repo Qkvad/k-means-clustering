@@ -1,11 +1,11 @@
-function [x]=sferneksredine(A,M,k,iteracije)
+function [x]=spherical_k_means(A,M,k,iter_num)
   [n,m]=size(A);
   x = zeros(m,1);
 
   d = -1;
-  for z=1:iteracije
+  for z=1:iter_num
   
-    % traženje najbližih centroida i stvaranje novih klastera
+    % searching of the closest concept vectors and creating new partitions
     y=9999*ones(m);
     for i=1:m
         for j=1:k
@@ -16,9 +16,9 @@ function [x]=sferneksredine(A,M,k,iteracije)
         end
     end
     
-    x
+    %x
   
-    % raèunanje novih centroida
+    % calculating new concept vectors
     M=zeros(n,k);
     for j=1:k
         br=0;
@@ -36,8 +36,8 @@ function [x]=sferneksredine(A,M,k,iteracije)
     end
     
     d_stara = d;
-    d = dobrota(A, M, x);
-    d
+    d = objective_function(A, M, x);
+    %d
     if(d<=d_stara)
       break;
     end

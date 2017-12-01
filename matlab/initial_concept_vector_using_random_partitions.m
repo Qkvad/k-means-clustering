@@ -1,7 +1,8 @@
-function [M] = pocetni_random_klaster (A, k)
+function [M] = initial_concept_vectors_using_random_partitions (A, k)
 
   [n,m]=size(A);
   
+  % calculate starting partition
   x = randperm(m);
   %x
   for i=1:m
@@ -9,7 +10,7 @@ function [M] = pocetni_random_klaster (A, k)
   end
   %x
   
-  % raèunanje poèetnih centroida
+  % calculate initial concept vector
   M=zeros(n,k);
   for j=1:k
     br=0;
@@ -21,7 +22,7 @@ function [M] = pocetni_random_klaster (A, k)
     end
     M(:,j)=(1/br)*M(:,j);
 
-    % normiranje (kako bi centar ostao na sferi)
+    % dividing by norm (to put them on a sphere)
     M(:,j) /= sqrt(sum (abs (M(:,j)) .^ 2));
   end
   
