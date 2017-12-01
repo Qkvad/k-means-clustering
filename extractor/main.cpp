@@ -20,7 +20,7 @@ int main() {
                                                     VARIABLES
     ==================================================================================================================*/
     std::string filename, word = "";
-    int current_file=0, number_of_files, check, count, word_count=0, unique_words=0, l, all_words=0;
+    int current_file=0, number_of_files, low, high, count, word_count=0, unique_words=0, l, all_words=0;
     char c;
     double** X;
 
@@ -73,7 +73,7 @@ int main() {
                                                EXAMINE USER PREFERENCES
     ==================================================================================================================*/
     char stopwords, stemming;
-    int shortlength, xtimes;
+    int shortlength, lowfreq, highfreq;
     std::cout << std::endl << "ignore stop words? [y/n] ";
     std::cin >> stopwords;
     std::cout << "use Porter stemming? [y/n] ";
@@ -81,7 +81,9 @@ int main() {
     std::cout << "ignore words of length less than: ";
     std::cin >> shortlength;
     std::cout << "ignore words that occur less than [ ] times in every file: ";
-    std::cin >> xtimes;
+    std::cin >> lowfreq;
+    std::cout << "ignore words that occur more than [ ] times in every file: ";
+    std::cin >> highfreq;
     std::cout << std::endl;
 
 
@@ -185,15 +187,20 @@ int main() {
     {
         for(word_iterator = letter_iterator->second.begin(); word_iterator != letter_iterator->second.end(); word_iterator++) {
             // test if word has <xtimes occurances in every file
-            check = 0;
+            low = 0;
+            high = 0;
             count = 0;
             for(int j=0; j<number_of_files; j++) {
-                if (word_iterator->second[j] < xtimes)
-                    check++;
+                if (word_iterator->second[j] < lowfreq)
+                    low++;
+                if (word_iterator->second[j] > highfreq)
+                    high++;
                 if(word_iterator->second[j] > 0)
                     count++;
             }
-            if(check == number_of_files)
+            if(low == number_of_files)
+                continue;
+            if(high == number_of_files)
                 continue;
 
             // print to output file
@@ -220,15 +227,20 @@ int main() {
     {
         for(word_iterator = letter_iterator->second.begin(); word_iterator != letter_iterator->second.end(); word_iterator++) {
             // test if word has 1 occurance in every file
-            check = 0;
+            low = 0;
+            high = 0;
             count = 0;
             for(int j=0; j<number_of_files; j++) {
-                if (word_iterator->second[j] < xtimes)
-                    check++;
+                if (word_iterator->second[j] < lowfreq)
+                    low++;
+                if (word_iterator->second[j] > highfreq)
+                    high++;
                 if(word_iterator->second[j] > 0)
                     count++;
             }
-            if(check == number_of_files)
+            if(low == number_of_files)
+                continue;
+            if(high == number_of_files)
                 continue;
 
             // set matrix element value
