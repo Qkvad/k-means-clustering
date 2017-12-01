@@ -14,6 +14,6 @@ function [dobr] = objective_function (A, M, x)
     v(x(i)) += transpose(A(:,i))*M(:,x(i));
   end
   
-  dobr = norm(v,2);
+  dobr = sum(v);
   
 endfunction

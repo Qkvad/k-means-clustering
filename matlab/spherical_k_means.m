@@ -29,7 +29,11 @@ function [x]=spherical_k_means(A,M,k,iter_num)
             end
         end
 
-        M(:,j)=(1/br)*M(:,j);
+        if br==0
+          M(:,j)=-1*ones(n,1);
+        else
+          M(:,j)=(1/br)*M(:,j);
+        end
         
         % normiranje (kako bi centar ostao na sferi)
         M(:,j) /= sqrt(sum (abs (M(:,j)) .^ 2));
