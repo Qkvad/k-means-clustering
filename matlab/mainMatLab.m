@@ -11,5 +11,5 @@ function [klaster,norma_aproksimacije,norma_SVD]=mainMatLab(k,iter_num)
   M = initial_concept_vectors_using_random_partitions(X,k);
   klaster=spherical_k_means(X,M,k,iter_num);
   
-  norma_aproksimacije=decomposition_norm(X,M,klaster,k,d,n);
+  norma_aproksimacije=decomposition_norm2(X,M,klaster,k,d,n);
   norma_SVD=k_trunc_svd(X,k);
