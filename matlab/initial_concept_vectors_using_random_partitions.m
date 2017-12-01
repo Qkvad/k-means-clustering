@@ -8,7 +8,7 @@ function [M] = initial_concept_vectors_using_random_partitions (A, k)
   for i=1:m
     x(i) = mod(x(i)-1,k) + 1;
   end
-  %x
+  x
   
   % calculate initial concept vector
   M=zeros(n,k);

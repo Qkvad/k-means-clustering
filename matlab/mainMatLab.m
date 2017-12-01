@@ -7,7 +7,7 @@ function [klaster,norma_aproksimacije,norma_SVD]=mainMatLab(k,iter_num)
   %m5=X(:,5);
   %m8=X(:,8);
   %M=[m1 m5 m8];
-  %M = initial_concept_vectors_using_perturbations(X,k,0.2);
+  %M = initial_concept_vectors_using_perturbations(X,k,0.01);
   M = initial_concept_vectors_using_random_partitions(X,k);
   klaster=spherical_k_means(X,M,k,iter_num);
   

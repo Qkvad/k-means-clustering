@@ -4,6 +4,14 @@ function [x]=spherical_k_means(A,M,k,iter_num)
 
   d = -1;
   for z=1:iter_num
+    
+    test = zeros(m,k);
+    for i=1:m
+      for j=1:k
+        test(i,j)=transpose(A(:,i))*M(:,j);
+      end
+    end
+    test
   
     % searching of the closest concept vectors and creating new partition
     y=zeros(m,1);
@@ -16,7 +24,14 @@ function [x]=spherical_k_means(A,M,k,iter_num)
         end
     end
     
-    %x
+    x
+    test = zeros(m,k);
+    for i=1:m
+      for j=1:k
+        test(i,j)=transpose(A(:,i))*M(:,j);
+      end
+    end
+    test
   
     % calculating new concept vectors
     M=zeros(n,k);
@@ -41,8 +56,10 @@ function [x]=spherical_k_means(A,M,k,iter_num)
     
     d_stara = d;
     d = objective_function(A, M, x);
-    %d
+    d
     if(d<=d_stara)
+      s = 'Break at z='+z;
+      printf("Break at k=%d\n", k);
       break;
     end
 
